@@ -4,7 +4,6 @@ env:
 image:
   repository: cloudnesil/sampleapp
   tag: latest
-  pullPolicy: "Always"
 ingress:
   enabled: "true"
   hosts:
