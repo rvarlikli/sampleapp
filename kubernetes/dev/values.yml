@@ -1,0 +1,15 @@
+env:
+  runtime:
+    SPRING_PROFILES_ACTIVE: "dev"
+image:
+  repository: cloudnesil/sampleapp
+  tag: latest
+  pullPolicy: "Always"
+ingress:
+  enabled: "true"
+  hosts:
+    -
+      host: "sample.example.com"
+      paths:
+        - "/"
+replicaCount: "3"

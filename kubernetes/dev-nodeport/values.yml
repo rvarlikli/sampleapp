@@ -1,0 +1,11 @@
+env:
+  runtime:
+    SPRING_PROFILES_ACTIVE: "dev"
+image:
+  repository: cloudnesil/sampleapp
+  tag: latest
+ingress:
+  enabled: "false"
+replicaCount: "3"
+service:
+  type: NodePort
