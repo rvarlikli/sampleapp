@@ -49,27 +49,22 @@ Tested on Kubernetes v1.15 with Helm 2.14+
 ```sh
 helm repo add mychartmuseum chartmuseum.example.com
 
-helm upgrade --install sample-app --namespace default cloudnesil/sampleapp --version 0.6.0 -f kubernetes/dev/values.yml
+IMAGE_VERSION=$(git describe --tag --long)
+
+helm upgrade --install sample-app --namespace default cloudnesil/sampleapp --version 0.6.0 --set image.tag=${IMAGE_VERSION} -f kubernetes/dev/values.yml
 ```
 
 #### with nodeport
 
 ```sh
 
-helm upgrade --install sample-app --namespace default cloudnesil/sampleapp --version 0.6.0 -f kubernetes/dev-nodeport/values.yml
+helm upgrade --install sample-app --namespace default cloudnesil/sampleapp --version 0.6.0 --set image.tag=${IMAGE_VERSION} -f kubernetes/dev-nodeport/values.yml
 
 ### To get NodePort
   export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services sample-app-sampleapp)
 
 ```
 
-
-#### to set specific docker image version
-
-```sh
-
-helm upgrade --install sample-app --namespace default cloudnesil/sampleapp --version 0.6.0 --set image.tag=${IMAGE_VERSION} -f kubernetes/dev/values.yml
-```
 
 
 
