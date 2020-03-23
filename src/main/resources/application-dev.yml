@@ -1,0 +1,27 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: text/html,text/css,application/javascript,application/json
+
+spring:
+  profiles:
+    active: dev
+  main:
+    banner-mode: 'OFF'
+  session:
+    store-type: none
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  data:
+    cassandra:
+      keyspace-name: application
+      port: 9042
+      contact-points: dev
+      username: cassandra
+      password: cassandra
+      consistencyLevel: ONE
+      paging-fetch-size: 50

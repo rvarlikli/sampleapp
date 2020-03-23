@@ -1,0 +1,71 @@
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE')
+        classpath('com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin:1.8.0')
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.0.5.RELEASE'
+    id 'com.google.cloud.tools.jib' version '2.1.0'
+}
+
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.google.cloud.tools.jib'
+apply plugin: 'idea'
+
+group 'product'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-test")
+    compile("org.springframework.boot:spring-boot-starter-data-cassandra")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("org.cassandraunit:cassandra-unit:3.11.2.0")
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.22.0'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+tasks.jibDockerBuild.dependsOn tasks.build
+
+/// jib settings to build docker image
+TimeZone tz = TimeZone.getTimeZone("UTC");
+DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+df.setTimeZone(tz);
+String formattedDate = df.format(new Date());
+
+def longVersionName = "git describe --tag --long".execute().text.trim()
+jib.to.image="cloudnesil/sampleapp"
+jib.to.tags=["latest" , longVersionName ]
+jib.container.creationTime = formattedDate
+
+bootJar {
+    excludeDevtools = true
+    archiveVersion = longVersionName
+    manifest {
+        attributes "LongApplication-Version": archiveVersion
+    }
+    printf("\nLong Application Version is: " + archiveVersion + " \n")
+    archiveBaseName = 'product'
+}
+
+
